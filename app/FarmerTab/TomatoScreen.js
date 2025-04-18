@@ -20,7 +20,7 @@ import { BASE_URL } from '../config';
 
 const { width, height } = Dimensions.get('window');
 
-const TomatoScreen = () => {
+const PepperScreen = () => {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
@@ -101,24 +101,21 @@ const TomatoScreen = () => {
         type: mimeType,
         name: `image.${fileExtension}`,
       });
+      formData.append('plant_type', 'tomato'); // Add plant_type=tomato
 
-      const result = await axios.post(
-        `${BASE_URL}/predict/`,
-        formData,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const result = await axios.post(`${BASE_URL}/predict/`, formData, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       setPrediction(result.data);
     } catch (error) {
-      console.error('Error details:', error.response || error);
+      console.error('Error predicting image:', error.response || error);
       Alert.alert(
         'Error',
-        error.response?.data?.detail || 'Failed to predict the image. Please try again.'
+        error.response?.data?.detail || 'Failed to predict the image. Please check your network or try again.'
       );
     } finally {
       setLoading(false);
@@ -160,7 +157,7 @@ const TomatoScreen = () => {
         </Pressable>
         <View style={styles.headerTextContainer}>
           <FontAwesome5 name="leaf" size={24} color="#FFF" style={styles.headerIcon} />
-          <Text style={styles.headerText}> Health Scanner</Text>
+          <Text style={styles.headerText}>Tomato Health Scanner</Text>
         </View>
       </View>
 
@@ -189,7 +186,7 @@ const TomatoScreen = () => {
               <MaterialIcons name="local-florist" size={60} color="#2F855A" />
               <Text style={styles.placeholderTitle}>Scan Your Plant</Text>
               <Text style={styles.placeholderText}>
-                Take or upload a photo of your potato plant leaf for instant disease detection
+                Take or upload a photo of your pepper plant leaf for instant disease detection
               </Text>
             </View>
           )}
@@ -423,6 +420,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 10,
   },
+  backButton: {
+    padding: 10,
+  },
+  backButtonHovered: {
+    opacity: 0.8,
+  },
 });
 
-export default TomatoScreen; // Fixed export name
+export default PepperScreen;
